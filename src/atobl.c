@@ -121,22 +121,22 @@ static const wchar_t fraktur_normal_upper[] = {
 };
 
 int main(int argc, char *argv[]){
-    setlocale(LC_ALL, "");
-    bool bold = false;
-    if(argc > 1 && strcmp(argv[1], "-b") == 0){
-        bold = true;
+  setlocale(LC_ALL, "");
+  bool bold = false;
+  if(argc > 1 && strcmp(argv[1], "-b") == 0){
+    bold = true;
+  }
+  wint_t ch;
+  wchar_t out_char;
+  while((ch = fgetwc(stdin)) != WEOF){
+    if(ch >= L'a' && ch <= L'z'){
+      out_char = bold ? fraktur_bold_lower[ch - L'a'] : fraktur_normal_lower[ch - L'a'];
+    }else if(ch >= L'A' && ch <= L'Z'){
+      out_char = bold ? fraktur_bold_upper[ch - L'A'] : fraktur_normal_upper[ch - L'A'];
+    }else{ 
+      out_char = (wchar_t)ch;
     }
-    wint_t ch;
-    wchar_t out_char;
-    while((ch = fgetwc(stdin)) != WEOF){
-      if(ch >= L'a' && ch <= L'z'){
-        out_char = bold ? fraktur_bold_lower[ch - L'a'] : fraktur_normal_lower[ch - L'a'];
-      }else if(ch >= L'A' && ch <= L'Z'){
-        out_char = bold ? fraktur_bold_upper[ch - L'A'] : fraktur_normal_upper[ch - L'A'];
-      }else{ 
-        out_char = (wchar_t)ch;
-      }
-      wprintf(L"%lc", out_char);
-    }
-    return 0;
+    wprintf(L"%lc", out_char);
+  }
+  return 0;
 }
