@@ -1,22 +1,33 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g3
+CFLAGS = -O2
 SRC = $(wildcard src/*.c)
 OBJ = $(patsubst src/%.c, build/%.o, $(SRC))
-BUILD_DIR = $(dir $(word 1, $(OBJ)))
+BUILD_DIR = build
+EXECUTABLE = $(BUILD_DIR)/atobl
+BINDIR = /usr/local/bin
 
-.PHONY: all dev run clean
+.PHONY: all build run clean install uninstall
 
-all: dev
+all: build
+build: $(EXECUTABLE)
 
-build/%.o: src/%.c
+$(BUILD_DIR)/%.o: src/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-dev: $(OBJ)
-	$(CC) -o $(BUILD_DIR)atobl $(OBJ) -lm
+$(EXECUTABLE): $(OBJ)
+	@mkdir -p $(dir $@)
+	$(CC) -o $@ $(OBJ)
 
-run: $(BUILD_DIR)atobl
-	./$(BUILD_DIR)atobl
+run: $(EXECUTABLE)
+	./$(EXECUTABLE)
 
 clean:
 	rm -rf build/*.o build/atobl .cache
+
+install: 
+	mkdir -p $(BINDIR)
+	cp -f $(BUILD_DIR)/atobl $(BINDIR)/atobl
+
+uninstall:
+	rm -f $(BINDIR)/atobl
